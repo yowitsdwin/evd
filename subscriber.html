@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Subscriber</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 500px;
+      margin: 40px auto;
+    }
+    #messages {
+      border: 2px solid #007BFF;
+      padding: 15px;
+      background: #e7f1ff;
+      min-height: 150px;
+      overflow-y: auto;
+      max-height: 300px;
+    }
+    .message {
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #ccc;
+    }
+    .timestamp {
+      font-size: 0.8em;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>Subscriber</h1>
+  <div id="messages">
+    <p><i>Waiting for messages...</i></p>
+  </div>
+
+  <script>
+    const messagesDiv = document.getElementById('messages');
+
+    function addMessage(messageData) {
+      // Remove "Waiting" message if present
+      if (messagesDiv.querySelector('p i')) {
+        messagesDiv.innerHTML = '';
+      }
+
+      const messageEl = document.createElement('div');
+      messageEl.className = 'message';
+
+      const textEl = document.createElement('div');
+      textEl.textContent = messageData.text;
+
+      const timeEl = document.createElement('div');
+      timeEl.className = 'timestamp';
+      const date = new Date(messageData.timestamp);
+      timeEl.textContent = `Received at: ${date.toLocaleTimeString()}`;
+
+      messageEl.appendChild(textEl);
+      messageEl.appendChild(timeEl);
+      messagesDiv.appendChild(messageEl);
+    }
+
+    // Listen for storage events (changes in localStorage from other tabs)
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'pubsub_message' && event.newValue) {
+        const messageData = JSON.parse(event.newValue);
+        addMessage(messageData);
+      }
+    });
+
+    // Optional: Show last message if page refreshed or opened later
+    window.addEventListener('load', () => {
+      const lastMessage = localStorage.getItem('pubsub_message');
+      if (lastMessage) {
+        addMessage(JSON.parse(lastMessage));
+      }
+    });
+  </script>
+</body>
+</html>
