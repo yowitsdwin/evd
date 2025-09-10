@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simple Pub/Sub Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    .subscriber {
+      border: 2px solid #007BFF;
+      padding: 15px;
+      margin-bottom: 10px;
+      background: #e7f1ff;
+    }
+    h2 {
+      margin-top: 0;
+      color: #007BFF;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Simple Pub/Sub Example</h1>
+  
+  <button id="publishBtn">Publish Message</button>
+  
+  <div class="subscriber" id="subscriber1">
+    <h2>Subscriber 1</h2>
+    <p>No messages yet.</p>
+  </div>
+  
+  <div class="subscriber" id="subscriber2">
+    <h2>Subscriber 2</h2>
+    <p>No messages yet.</p>
+  </div>
+  
+  <script>
+    // Create a simple Pub/Sub system
+    const PubSub = {
+      events: {},
+
+      // Subscribe to an event
+      subscribe: function(eventName, fn) {
+        this.events[eventName] = this.events[eventName] || [];
+        this.events[eventName].push(fn);
+      },
+
+      // Publish an event
+      publish: function(eventName, data) {
+        if (!this.events[eventName]) return;
+        this.events[eventName].forEach(fn => {
+          fn(data);
+        });
+      }
+    };
+
+    // Select the button and subscribers
+    const publishBtn = document.getElementById('publishBtn');
+    const subscriber1 = document.getElementById('subscriber1').querySelector('p');
+    const subscriber2 = document.getElementById('subscriber2').querySelector('p');
+
+    // Subscribe subscriber1 to "message" event
+    PubSub.subscribe('message', (data) => {
+      subscriber1.textContent = `Subscriber 1 received: ${data}`;
+    });
+
+    // Subscribe subscriber2 to "message" event
+    PubSub.subscribe('message', (data) => {
+      subscriber2.textContent = `Subscriber 2 received: ${data}`;
+    });
+
+    // When button clicked, publish a message
+    publishBtn.addEventListener('click', () => {
+      const message = 'Hello from Publisher! Time: ' + new Date().toLocaleTimeString();
+      PubSub.publish('message', message);
+    });
+  </script>
+</body>
+</html>
