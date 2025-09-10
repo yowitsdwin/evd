@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Publisher</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 500px;
+      margin: 40px auto;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      font-size: 16px;
+      padding: 10px;
+    }
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Publisher</h1>
+  <textarea id="messageInput" placeholder="Type your message here..."></textarea>
+  <br />
+  <button id="sendBtn">Publish Message</button>
+
+  <script>
+    const sendBtn = document.getElementById('sendBtn');
+    const messageInput = document.getElementById('messageInput');
+
+    sendBtn.addEventListener('click', () => {
+      const message = messageInput.value.trim();
+      if (!message) {
+        alert('Please enter a message.');
+        return;
+      }
+
+      // Use localStorage to publish message
+      const messageData = {
+        text: message,
+        timestamp: new Date().toISOString()
+      };
+
+      // Use a unique key and set item triggers storage event in other tabs
+      localStorage.setItem('pubsub_message', JSON.stringify(messageData));
+
+      // Clear input
+      messageInput.value = '';
+
+      alert('Message published!');
+    });
+  </script>
+</body>
+</html>
