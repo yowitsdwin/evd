@@ -12,15 +12,23 @@
     }
     textarea {
       width: 100%;
-      height: 100px;
+      height: 120px;
       font-size: 16px;
       padding: 10px;
+      box-sizing: border-box;
+      resize: vertical;
     }
     button {
       padding: 12px 20px;
       font-size: 16px;
       margin-top: 10px;
+      margin-right: 10px;
       cursor: pointer;
+    }
+    #confirmation {
+      margin-top: 10px;
+      color: green;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -29,10 +37,14 @@
   <textarea id="messageInput" placeholder="Type your message here..."></textarea>
   <br />
   <button id="sendBtn">Publish Message</button>
+  <button id="clearBtn">Clear</button>
+  <div id="confirmation"></div>
 
   <script>
     const sendBtn = document.getElementById('sendBtn');
+    const clearBtn = document.getElementById('clearBtn');
     const messageInput = document.getElementById('messageInput');
+    const confirmation = document.getElementById('confirmation');
 
     sendBtn.addEventListener('click', () => {
       const message = messageInput.value.trim();
@@ -41,19 +53,19 @@
         return;
       }
 
-      // Use localStorage to publish message
       const messageData = {
         text: message,
         timestamp: new Date().toISOString()
       };
 
-      // Use a unique key and set item triggers storage event in other tabs
       localStorage.setItem('pubsub_message', JSON.stringify(messageData));
+      
+      confirmation.textContent = 'Message published successfully!';
+    });
 
-      // Clear input
+    clearBtn.addEventListener('click', () => {
       messageInput.value = '';
-
-      alert('Message published!');
+      confirmation.textContent = '';
     });
   </script>
 </body>
